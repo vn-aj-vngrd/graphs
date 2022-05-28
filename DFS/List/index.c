@@ -2,9 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-// n(n-1)/2
 #define MAX_VERTEX 5
-#define MAX_EDGES 10
+#define MAX_EDGES 10 // n(n-1)/2
 
 typedef struct
 {
@@ -25,14 +24,6 @@ typedef struct node
 } Node, *NodePtr;
 
 typedef NodePtr AdjList[MAX_VERTEX];
-
-void init(AdjList L)
-{
-    for (int i = 0; i < MAX_VERTEX; i++)
-    {
-        L[i] = NULL;
-    }
-}
 
 void createAdjList(AdjList A, EdgeList E)
 {
@@ -62,73 +53,7 @@ void createAdjList(AdjList A, EdgeList E)
     }
 }
 
-void DFS_IterativeV1(AdjList A, int start)
-{
-    // NodePtr trav;
-
-    // int visited[MAX_VERTEX] = {0};
-    // int stack[MAX_VERTEX] = {0};
-    // int top = 0;
-
-    // visited[start] = 1;
-    // stack[top] = start;
-    // printf("%d ", start);
-
-    // while (top > -1)
-    // {
-    //     for (trav = A[top]; trav != NULL; trav = trav->next)
-    //     {
-    //         if (!visited[trav->vertex])
-    //         {
-    //             break;
-    //         }
-    //     }
-    //     if (trav == NULL)
-    //     {
-    //         top--;
-    //     }
-    //     else
-    //     {
-    //         stack[++top] = trav->vertex;
-    //         visited[stack[top]] = 1;
-    //         printf("%d ", stack[top]);
-    //     }
-    // }
-
-    int mark[MAX_VERTEX];
-    int curr, stack[MAX_VERTEX + 1];
-    NodePtr trav;
-
-    stack[0] = 1;
-    stack[stack[0]] = start;
-    mark[start] = 1;
-    printf("%d ", start);
-
-    while (stack[0] > 0)
-    {
-        curr = stack[stack[0]];
-        for (trav = A[curr]; trav != NULL; trav = trav->next)
-        {
-            if (mark[trav->vertex] != 1)
-            {
-                break;
-            }
-        }
-        if (trav == NULL)
-        {
-            stack[0]--;
-        }
-        else
-        {
-            stack[0]++;
-            stack[stack[0]] = trav->vertex;
-            printf("%d ", stack[stack[0]]);
-            mark[stack[stack[0]]] = 1;
-        }
-    }
-}
-
-void DFS_IterativeV2(AdjList A, int start)
+void DFS_Iterative(AdjList A, int start)
 {
     NodePtr trav;
 
@@ -166,7 +91,7 @@ void DFS_IterativeV2(AdjList A, int start)
     }
 }
 
-void DFS_RecursiveV1(AdjList A, int visited[], int current)
+void DFS_Recursive(AdjList A, int visited[], int current)
 {
     printf("%d ", current);
     visited[current] = 1;
@@ -176,8 +101,22 @@ void DFS_RecursiveV1(AdjList A, int visited[], int current)
     {
         if (!visited[trav->vertex])
         {
-            DFS_RecursiveV1(A, visited, trav->vertex);
+            DFS_Recursive(A, visited, trav->vertex);
         }
+    }
+}
+
+void display(AdjList A)
+{
+    NodePtr trav;
+    for (int i = 0; i < MAX_VERTEX; i++)
+    {
+        printf("%d: ", i);
+        for (trav = A[i]; trav != NULL; trav = trav->next)
+        {
+            printf("%d ", trav->vertex);
+        }
+        printf("\n");
     }
 }
 
@@ -185,20 +124,17 @@ int main()
 {
     EdgeList E = {{{1, 3}, {2, 3}, {3, 4}, {1, 4}, {2, 1}}, 5};
 
-    AdjList A;
-    init(A);
+    AdjList A = {};
+
     createAdjList(A, E);
-    printf("V1: ");
-    DFS_IterativeV1(A, 3);
+    display(A);
 
-    printf("\nV2: ");
+    printf("\nI: ");
+    DFS_Iterative(A, 3);
 
-    DFS_IterativeV2(A, 3);
-
-    printf("\nR1: ");
-
+    printf("\nR: ");
     int visited[MAX_VERTEX] = {0};
-    DFS_RecursiveV1(A, visited, 3);
+    DFS_Recursive(A, visited, 3);
 
     return 0;
 }

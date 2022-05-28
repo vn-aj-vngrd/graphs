@@ -38,7 +38,7 @@ MATRIX createAM(EdgeList E)
     return M;
 }
 
-void display(MATRIX_1 M)
+void display(MATRIX M)
 {
     int i, j;
     printf("   ");
@@ -55,23 +55,27 @@ void display(MATRIX_1 M)
     }
 }
 
-void DFS(MATRIX_1 M, int start)
+void DFS_Iterative(MATRIX M, int start)
 {
+    // Create marker for visited nodes
     int visited[MAX_VERTEX] = {0};
+
+    // Create a stack
     int stack[100];
-
     int top = -1;
-    int last = 1;
-    int trav;
-    int current;
 
+    // Mark the starting point visited and display it
     visited[start] = 1;
     stack[++top] = start;
     printf("%d ", start);
 
+    // This will determine if a row is traversed completely
+    int last = 1;
+
+    // Loop while stack is not empty
     while (top >= 0)
     {
-        current = stack[top];
+        int current = stack[top];
         if (last == 1)
         {
             top--;
@@ -83,6 +87,7 @@ void DFS(MATRIX_1 M, int start)
             printf("%d ", current);
         }
 
+        int trav;
         for (trav = 0; trav < MAX_VERTEX; trav++)
         {
             if (!visited[trav] && M[current][trav] != 0)
@@ -94,25 +99,9 @@ void DFS(MATRIX_1 M, int start)
 
         last = MAX_VERTEX == trav ? 1 : 0;
     }
-    // while (top > -1)
-    // {
-    //     for (int y = 0; y < MAX_VERTEX; y++)
-    //     {
-    //         if (visited[y] == 0 && M[y][stack[top]] == 1)
-    //         {
-    //             printf("%d ", y);
-    //             stack[++top] = y;
-    //             visited[y] = 1;
-    //             // printf("%d ", stack[top]);
-    //             y = 0;
-    //             printf("\n");
-    //         }
-    //     }
-    //     top--;
-    // }
 }
 
-void DFS2(MATRIX_1 M, int visited[], int current)
+void DFS_Recursive(MATRIX M, int visited[], int current)
 {
     printf("%d ", current);
     visited[current] = 1;
@@ -121,7 +110,7 @@ void DFS2(MATRIX_1 M, int visited[], int current)
     {
         if (!visited[i] && M[current][i])
         {
-            DFS2(M, visited, i);
+            DFS_Recursive(M, visited, i);
         }
     }
 }
@@ -130,16 +119,15 @@ int main()
 {
     EdgeList E = {{{1, 3}, {2, 3}, {3, 4}, {0, 4}, {2, 1}}, 5};
 
-    MATRIX_1 M1;
-    initMatrix(M1);
-    createAM2(M1, E);
-    displayV2(M1);
-    printf("\n");
+    MATRIX M = createAM(E);
+    display(M);
 
-    DFS(M1, 0);
-    printf("\n");
+    printf("\n\nI: ");
+    DFS_Iterative(M, 0);
+
+    printf("\nR: ");
     int visited[MAX_VERTEX] = {0};
-    DFS2(M1, visited, 0);
+    DFS_Recursive(M, visited, 0);
 
     return 0;
 }
