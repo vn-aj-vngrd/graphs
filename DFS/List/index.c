@@ -55,17 +55,22 @@ void createAdjList(AdjList A, EdgeList E)
 
 void DFS_Iterative(AdjList A, int start)
 {
-    NodePtr trav;
-
+    // Create marker for visited nodes
     int visited[MAX_VERTEX] = {0};
+
+    // Create a stack
     int stack[MAX_VERTEX] = {0};
     int top = -1;
 
+    // Mark the starting node as visited and display it
     visited[start] = 1;
     stack[++top] = start;
     printf("%d ", start);
 
+    // This will determine if a row is traversed completely
     int last = 1;
+
+    // Loop while stack is not empty
     while (top >= 0)
     {
         int current = stack[top];
@@ -78,6 +83,7 @@ void DFS_Iterative(AdjList A, int start)
             printf("%d ", current);
         }
 
+        NodePtr trav;
         for (trav = A[current]; trav != NULL; trav = trav->next)
         {
             if (!visited[trav->vertex])
