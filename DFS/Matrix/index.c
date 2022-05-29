@@ -69,17 +69,10 @@ void DFS_Iterative(MATRIX M, int start)
     stack[++top] = start;
     printf("%d ", start);
 
-    // This will determine if a row is traversed completely
-    int last = 1;
-
     // Loop while stack is not empty
     while (top >= 0)
     {
-        int current = stack[top];
-        if (last == 1)
-        {
-            top--;
-        }
+        int current = stack[top--];
 
         if (!visited[current])
         {
@@ -88,16 +81,13 @@ void DFS_Iterative(MATRIX M, int start)
         }
 
         int trav;
-        for (trav = 0; trav < MAX_VERTEX; trav++)
+        for (trav = MAX_VERTEX - 1; trav >= 0; trav--)
         {
             if (!visited[trav] && M[current][trav] != 0)
             {
                 stack[++top] = trav;
-                break;
             }
         }
-
-        last = MAX_VERTEX == trav ? 1 : 0;
     }
 }
 
@@ -122,16 +112,17 @@ void DFS_Recursive(MATRIX M, int visited[], int current)
 int main()
 {
     EdgeList E = {{{1, 3}, {2, 3}, {3, 4}, {0, 4}, {2, 1}}, 5};
+    int start = 2;
 
     MATRIX M = createAM(E);
     display(M);
 
     printf("\n\nI: ");
-    DFS_Iterative(M, 0);
+    DFS_Iterative(M, start);
 
     printf("\nR: ");
     int visited[MAX_VERTEX] = {0};
-    DFS_Recursive(M, visited, 0);
+    DFS_Recursive(M, visited, start);
 
     return 0;
 }

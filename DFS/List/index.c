@@ -43,40 +43,34 @@ void createAdjList(AdjList A, EdgeList E)
             if (*trav)
                 (*trav)->vertex = v;
 
-            for (trav = &A[v]; *trav != NULL; trav = &(*trav)->next)
-            {
-            }
-            *trav = (NodePtr)calloc(sizeof(Node), 1);
-            if (*trav)
-                (*trav)->vertex = u;
+            // for (trav = &A[v]; *trav != NULL; trav = &(*trav)->next)
+            // {
+            // }
+            // *trav = (NodePtr)calloc(sizeof(Node), 1);
+            // if (*trav)
+            //     (*trav)->vertex = u;
         }
     }
 }
 
 void DFS_Iterative(AdjList A, int start)
 {
-    // Create marker for visited nodes
-    int visited[MAX_VERTEX] = {0};
-
     // Create a stack
     int stack[MAX_VERTEX] = {0};
     int top = -1;
+
+    // Create marker for visited nodes
+    int visited[MAX_VERTEX] = {0};
 
     // Mark the starting node as visited and display it
     visited[start] = 1;
     stack[++top] = start;
     printf("%d ", start);
 
-    // This will determine if a row is traversed completely
-    int last = 1;
-
     // Loop while stack is not empty
     while (top >= 0)
     {
-        int current = stack[top];
-
-        // Pop when the entire row is traversed
-        last == 1 ? top-- : 0;
+        int current = stack[top--];
 
         // Display the unvisited current vertex
         if (!visited[current])
@@ -93,12 +87,8 @@ void DFS_Iterative(AdjList A, int start)
             if (!visited[trav->vertex])
             {
                 stack[++top] = trav->vertex;
-                break;
             }
         }
-
-        // Last is set to 1 when the entire row is traversed
-        last = trav == NULL ? 1 : 0;
     }
 }
 
@@ -136,19 +126,19 @@ void display(AdjList A)
 
 int main()
 {
-    EdgeList E = {{{1, 3}, {2, 3}, {3, 4}, {1, 4}, {2, 1}}, 5};
+    EdgeList E = {{{0, 4}, {1, 0}, {1, 3}, {2, 1}, {2, 3}, {3, 4}}, 6};
+    int start = 2;
 
     AdjList A = {};
-
     createAdjList(A, E);
     display(A);
 
     printf("\nI: ");
-    DFS_Iterative(A, 3);
+    DFS_Iterative(A, start);
 
     printf("\nR: ");
     int visited[MAX_VERTEX] = {0};
-    DFS_Recursive(A, visited, 3);
+    DFS_Recursive(A, visited, start);
 
     return 0;
 }
