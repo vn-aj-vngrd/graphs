@@ -24,9 +24,9 @@ typedef struct
     int edge_count;
 } EdgeList;
 
-typedef int MATRIX[MAX_VERTEX][MAX_VERTEX];
+typedef int MATRIX_1[MAX_VERTEX][MAX_VERTEX];
 
-void createGraph(MATRIX M, EdgeList E)
+void createGraph(MATRIX_1 M, EdgeList E)
 {
     int i;
     for (i = 0; i < E.edge_count; i++)
@@ -36,7 +36,7 @@ void createGraph(MATRIX M, EdgeList E)
     }
 }
 
-void display(MATRIX M)
+void display(MATRIX_1 M)
 {
     int i, j;
     printf("   ");
@@ -54,7 +54,7 @@ void display(MATRIX M)
     printf("\n");
 }
 
-void BFS_Iterative(MATRIX M, int start)
+void BFS_Iterative(MATRIX_1 M, int start)
 {
     // Create a queue
     int queue[100];
@@ -90,7 +90,7 @@ void BFS_Iterative(MATRIX M, int start)
     }
 }
 
-void BFS_Recursive(MATRIX M, Queue *Q, int visited[], int current)
+void BFS_Recursive(MATRIX_1 M, Queue *Q, int visited[], int current)
 {
     if (!visited[current])
     {
@@ -114,7 +114,7 @@ void BFS_Recursive(MATRIX M, Queue *Q, int visited[], int current)
     }
 }
 
-void BFS_Traversal(MATRIX M, int start)
+void BFS_Traversal(MATRIX_1 M, int start)
 {
     Queue Q;
     Q.front = 0;
@@ -130,7 +130,7 @@ int main()
     EdgeList E = {{{0, 4}, {1, 0}, {1, 3}, {2, 1}, {2, 3}, {3, 4}}, 6};
     int start = 2;
 
-    MATRIX M = {0};
+    MATRIX_1 M = {0};
     createGraph(M, E);
     display(M);
 

@@ -16,12 +16,12 @@ typedef struct
     int edge_count;
 } EdgeList;
 
-typedef int **MATRIX_1;
+typedef int **MATRIX_2;
 typedef int MATRIX_2[MAX_VERTEX][MAX_VERTEX];
 
-MATRIX_1 createAMV1(EdgeList E)
+MATRIX_2 createAMV1(EdgeList E)
 {
-    MATRIX_1 M = (MATRIX_1)calloc(sizeof(int *), MAX_VERTEX);
+    MATRIX_2 M = (MATRIX_2)calloc(sizeof(int *), MAX_VERTEX);
 
     int i;
     for (i = 0; i < MAX_VERTEX; i++)
@@ -48,7 +48,7 @@ void createAM2(MATRIX_2 M, EdgeList E)
     }
 }
 
-void displayV1(MATRIX_1 M)
+void displayV1(MATRIX_2 M)
 {
     int i, j;
     printf("   ");
@@ -87,7 +87,7 @@ int main()
 {
     EdgeList E = {{{1, 3}, {2, 3}, {3, 4}, {0, 1}, {3, 0}}, 5};
 
-    MATRIX_1 M1 = createAMV1(E);
+    MATRIX_2 M1 = createAMV1(E);
     displayV1(M1);
 
     MATRIX_2 M2 = {0};
