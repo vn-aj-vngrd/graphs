@@ -64,10 +64,8 @@ void DFS_Iterative(MATRIX M, int start)
     int stack[100];
     int top = -1;
 
-    // Mark the starting point visited and display it
-    visited[start] = 1;
+    // Push the starting vertex
     stack[++top] = start;
-    printf("%d ", start);
 
     // Loop while stack is not empty
     while (top >= 0)
@@ -112,7 +110,7 @@ void DFS_Recursive(MATRIX M, int visited[], int current)
 int main()
 {
     EdgeList E = {{{1, 3}, {2, 3}, {3, 4}, {0, 4}, {2, 1}}, 5};
-    int start = 2;
+    int start = 0;
 
     MATRIX M = createAM(E);
     display(M);

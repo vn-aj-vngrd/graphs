@@ -62,10 +62,8 @@ void DFS_Iterative(AdjList A, int start)
     // Create marker for visited nodes
     int visited[MAX_VERTEX] = {0};
 
-    // Mark the starting node as visited and display it
-    visited[start] = 1;
+    // Push the starting vertex
     stack[++top] = start;
-    printf("%d ", start);
 
     // Loop while stack is not empty
     while (top >= 0)
@@ -79,7 +77,7 @@ void DFS_Iterative(AdjList A, int start)
             printf("%d ", current);
         }
 
-        // Traverse the row and stop when the unvisited vertex is reached
+        // Traverse the row 
         NodePtr trav;
         for (trav = A[current]; trav != NULL; trav = trav->next)
         {
