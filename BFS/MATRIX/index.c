@@ -8,6 +8,12 @@
 
 typedef struct
 {
+    int queue[QUEUE_SIZE];
+    int front, rear;
+} Queue;
+
+typedef struct
+{
     int vertex;
     int adj_vertex;
 } EdgeType;
@@ -48,65 +54,91 @@ void display(MATRIX M)
     printf("\n");
 }
 
-void BFS_Traversal(MATRIX M, int start)
+void BFS_Iterative(MATRIX M, int start)
 {
-    int trav, current_vertex;
-
-    int visited[MAX_VERTEX];
-    memset(visited, 0, sizeof(visited));
-
+    // Create a queue
     int queue[100];
-    int front = 0;
-    int rear = -1;
+    int front = 0, rear = -1;
 
+    // Create a marker for visited nodes
+    int visited[MAX_VERTEX] = {0};
+
+    // Enqueue the start node
     queue[++rear] = start;
 
+    // While queue is not empty
     while (front <= rear)
     {
-        current_vertex = queue[front++];
-        printf("%d ", current_vertex);
+        // Dequeue a vertex from queue and display it
+        int current = queue[front++];
 
+        if (!visited[current])
+        {
+            printf("%d ", current);
+            visited[current] = 1;
+        }
+
+        // Explore the neighbors of current vertex
+        int trav;
         for (trav = 0; trav < MAX_VERTEX; trav++)
         {
-            if (M[current_vertex][trav] != 0 && visited[trav] != 1 && visited[trav] != 2)
+            if (M[current][trav] != 0 && visited[trav] != 1)
             {
                 queue[++rear] = trav;
-                visited[trav] = 1;
             }
         }
-        visited[current_vertex] = 2;
     }
-    printf("\n");
 }
 
-void BFS_Recursive(MATRIX M, int visited[], int current)
+void BFS_Recursive(MATRIX M, Queue *Q, int visited[], int current)
 {
-    printf("%d ", current);
-    visited[current] = 1;
+    if (!visited[current])
+    {
+        visited[current] = 1;
+        printf("%d ", current);
+    }
 
     int trav;
     for (trav = 0; trav < MAX_VERTEX; trav++)
     {
-        if (M[current][trav] != 0 && visited[trav] != 1 && visited[trav] != 2)
+        if (M[current][trav] != 0 && visited[trav] != 1)
         {
-            BFS_Recursive(M, visited, trav);
+            Q->queue[++Q->rear] = trav;
         }
     }
+
+    if (Q->front <= Q->rear)
+    {
+        int next = Q->queue[Q->front++];
+        BFS_Recursive(M, Q, visited, next);
+    }
+}
+
+void BFS_Traversal(MATRIX M, int start)
+{
+    Queue Q;
+    Q.front = 0;
+    Q.rear = -1;
+
+    int visited[MAX_VERTEX] = {0};
+
+    BFS_Recursive(M, &Q, visited, start);
 }
 
 int main()
 {
-    EdgeList E = {{{0, 4}, {1, 3}, {2, 1}, {2, 3}, {3, 4}}, 5};
-    MATRIX M = {0};
+    EdgeList E = {{{0, 4}, {1, 0}, {1, 3}, {2, 1}, {2, 3}, {3, 4}}, 6};
+    int start = 2;
 
+    MATRIX M = {0};
     createGraph(M, E);
     display(M);
 
-    int visited[MAX_VERTEX] = {0};
+    printf("\nI: ");
+    BFS_Iterative(M, start);
+
     printf("\nR: ");
-    BFS_Traversal(M, 2);
-    printf("I: ");
-    BFS_Recursive(M, visited, 2);
+    BFS_Traversal(M, start);
 
     return 0;
 }

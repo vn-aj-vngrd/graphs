@@ -103,11 +103,15 @@ void DFS_Iterative(MATRIX M, int start)
 
 void DFS_Recursive(MATRIX M, int visited[], int current)
 {
+    // Display the current node
     printf("%d ", current);
     visited[current] = 1;
 
-    for (int i = 0; i < MAX_VERTEX; i++)
+    // Traverse the adjacency matrix
+    int i;
+    for (i = 0; i < MAX_VERTEX; i++)
     {
+        // Look for unvisited links
         if (!visited[i] && M[current][i])
         {
             DFS_Recursive(M, visited, i);

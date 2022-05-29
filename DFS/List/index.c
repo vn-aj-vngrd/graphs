@@ -75,17 +75,21 @@ void DFS_Iterative(AdjList A, int start)
     {
         int current = stack[top];
 
+        // Pop when the entire row is traversed
         last == 1 ? top-- : 0;
 
+        // Display the unvisited current vertex
         if (!visited[current])
         {
             visited[current] = 1;
             printf("%d ", current);
         }
 
+        // Traverse the row and stop when the unvisited vertex is reached
         NodePtr trav;
         for (trav = A[current]; trav != NULL; trav = trav->next)
         {
+            // Look for the unvisited vertex
             if (!visited[trav->vertex])
             {
                 stack[++top] = trav->vertex;
@@ -93,18 +97,22 @@ void DFS_Iterative(AdjList A, int start)
             }
         }
 
+        // Last is set to 1 when the entire row is traversed
         last = trav == NULL ? 1 : 0;
     }
 }
 
 void DFS_Recursive(AdjList A, int visited[], int current)
 {
+    // Display the current node
     printf("%d ", current);
     visited[current] = 1;
 
+    // Traverse the adjacency list
     NodePtr trav;
     for (trav = A[current]; trav != NULL; trav = trav->next)
     {
+        // Look for the unvisited vertex
         if (!visited[trav->vertex])
         {
             DFS_Recursive(A, visited, trav->vertex);
