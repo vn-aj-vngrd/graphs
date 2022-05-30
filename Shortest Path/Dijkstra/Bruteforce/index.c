@@ -24,8 +24,8 @@ int *dijkstra(MATRIX M, int start)
     // Mark the starting vertex as visited
     visited[start] = 1;
 
-    // Set the starting vertex as the current vertex
-    int current_vertex = start;
+    // Set the starting vertex as the selected vertex
+    int selected_vertex = start;
 
     // Iterate through the remaining vertices
     for (int i = 1; i < MAX_VERTEX; i++)
@@ -41,19 +41,19 @@ int *dijkstra(MATRIX M, int start)
             if (!visited[smallest] && distance[smallest] < min)
             {
                 min = distance[smallest];
-                current_vertex = smallest;
+                selected_vertex = smallest;
             }
         }
 
-        // Mark the current_vertex as visited
-        visited[current_vertex] = 1;
+        // Mark the selected_vertex as visited
+        visited[selected_vertex] = 1;
 
         // Apply relaxation if possible
         for (int neighbor = 0; neighbor < MAX_VERTEX; neighbor++)
         {
-            if (!visited[neighbor] && distance[neighbor] > distance[current_vertex] + M[current_vertex][neighbor])
+            if (!visited[neighbor] && distance[neighbor] > distance[selected_vertex] + M[selected_vertex][neighbor])
             {
-                distance[neighbor] = distance[current_vertex] + M[current_vertex][neighbor];
+                distance[neighbor] = distance[selected_vertex] + M[selected_vertex][neighbor];
             }
         }
     }

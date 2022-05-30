@@ -95,16 +95,18 @@ int *dijkstra(MATRIX M, int start)
     // Until PQ is empty, we perform the operation.
     while (Q.last_index > -1)
     {
-        Node current = deleteMin(&Q);
-        int current_vertex = current.vertex;
+        // Get the min from the PQ
+        Node min = deleteMin(&Q);
+        int selected_vertex = min.vertex;
 
+        // Relaxation
         for (int neighbor = 0; neighbor < MAX_VERTEX; neighbor++)
         {
-            if (M[current_vertex][neighbor] != INF && M[current_vertex][neighbor] != 0)
+            if (M[selected_vertex][neighbor] != INF && M[selected_vertex][neighbor] != 0)
             {
-                if (distance[neighbor] > distance[current_vertex] + M[current_vertex][neighbor])
+                if (distance[neighbor] > distance[selected_vertex] + M[selected_vertex][neighbor])
                 {
-                    distance[neighbor] = distance[current_vertex] + M[current_vertex][neighbor];
+                    distance[neighbor] = distance[selected_vertex] + M[selected_vertex][neighbor];
                     insert(&Q, neighbor, distance[neighbor]);
                 }
             }
