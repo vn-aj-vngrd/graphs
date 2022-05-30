@@ -3,22 +3,7 @@
 #include <stdlib.h>
 
 #define MAX_VERTEX 5
-#define MAX 10 /** undirected: 5(5-1) / 2 **/
 #define INF 9999
-
-/* An unweighted, undirected Edge */
-typedef struct
-{
-    int vertex;
-    int adj_vertex;
-} edgeType;
-
-typedef struct
-{
-    edgeType Edge[MAX];
-    int edge_count;
-} EdgeList;
-
 typedef struct
 {
     int vertex;
@@ -31,8 +16,7 @@ typedef struct
     int last_index;
 } PQ;
 
-typedef int MATRIX[MAX_VERTEX][MAX_VERTEX]; // static
-typedef int **MATRIX_1;                     // dynamic
+typedef int MATRIX[MAX_VERTEX][MAX_VERTEX];
 
 void insert(PQ *Q, int vertex, int weight)
 {
@@ -55,24 +39,31 @@ void insert(PQ *Q, int vertex, int weight)
 Node deleteMin(PQ *Q)
 {
     Node node;
+    // if PQ is not empty, perform operation
     if (Q->last_index >= 0)
     {
+        // Set current to 0 and child to 1
         int current = 0, child = 1;
 
+        // Get to root node of the tree
         node = Q->node[current];
+
+        // Get the last node of the tree and set it to the root
         Q->node[current] = Q->node[Q->last_index--];
 
-        Node temp;
+        // Heapify
         while (child <= Q->last_index)
         {
+            //   right    <=  last                 left             >          right
             if (child + 1 <= Q->last_index && Q->node[child].weight > Q->node[child + 1].weight)
             {
                 child++;
             }
 
+            // current > child
             if (Q->node[current].weight > Q->node[child].weight)
             {
-                temp = Q->node[current];
+                Node temp = Q->node[current];
                 Q->node[current] = Q->node[child];
                 Q->node[child] = temp;
 

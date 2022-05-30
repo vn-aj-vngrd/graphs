@@ -3,26 +3,11 @@
 #include <stdlib.h>
 
 #define MAX_VERTEX 5
-#define MAX 10 /** undirected: 5(5-1) / 2 or n (n-1) /2 **/
 #define INF 9999
 
-/* An unweighted, undirected Edge */
-typedef struct
-{
-    int vertex;
-    int adj_vertex;
-} edgeType;
+typedef int MATRIX[MAX_VERTEX][MAX_VERTEX];
 
-typedef struct
-{
-    edgeType Edge[MAX];
-    int edge_count;
-} EdgeList;
-
-typedef int MATRIX_1[MAX_VERTEX][MAX_VERTEX]; // static
-typedef int **MATRIX_2;                       // dynamic
-
-int *dijkstra(MATRIX_1 M, int start)
+int *dijkstra(MATRIX M, int start)
 {
     // Create a distance matrix
     int *distance = (int *)calloc(sizeof(int), MAX_VERTEX);
@@ -51,12 +36,12 @@ int *dijkstra(MATRIX_1 M, int start)
         // Get the current vertex which follows the ff conditions:
         // - The vertex is not yet visited
         // - Has the smallest distance
-        for (int j = 0; j < MAX_VERTEX; j++)
+        for (int smallest = 0; smallest < MAX_VERTEX; smallest++)
         {
-            if (!visited[j] && distance[j] < min)
+            if (!visited[smallest] && distance[smallest] < min)
             {
-                min = distance[j];
-                current_vertex = j;
+                min = distance[smallest];
+                current_vertex = smallest;
             }
         }
 
@@ -64,11 +49,11 @@ int *dijkstra(MATRIX_1 M, int start)
         visited[current_vertex] = 1;
 
         // Apply relaxation if possible
-        for (int k = 0; k < MAX_VERTEX; k++)
+        for (int neighbor = 0; neighbor < MAX_VERTEX; neighbor++)
         {
-            if (!visited[k] && distance[k] > distance[current_vertex] + M[current_vertex][k])
+            if (!visited[neighbor] && distance[neighbor] > distance[current_vertex] + M[current_vertex][neighbor])
             {
-                distance[k] = distance[current_vertex] + M[current_vertex][k];
+                distance[neighbor] = distance[current_vertex] + M[current_vertex][neighbor];
             }
         }
     }
@@ -83,7 +68,7 @@ void displayDistance(int distance[], int source)
         printf("\nShortest distance from %d to %d: %d", source, i, distance[i]);
 }
 
-void displayMatrix(MATRIX_1 M)
+void displayMatrix(MATRIX M)
 {
     printf("%3c", ' ');
     for (int i = 0; i < MAX_VERTEX; i++)
@@ -99,7 +84,7 @@ void displayMatrix(MATRIX_1 M)
 
 int main()
 {
-    MATRIX_1 M = {
+    MATRIX M = {
         {INF, 30, 25, INF, 50},
         {30, INF, INF, 90, 30},
         {25, INF, INF, 40, INF},
