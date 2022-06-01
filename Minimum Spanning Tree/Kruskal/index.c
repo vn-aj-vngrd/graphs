@@ -1,174 +1,224 @@
-// Kruskal's algorithm in C
-
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-#define MAX 30
+#define INF 9999
+#define UNDEFINED -1
+#define MAX_VERTEX 5
+#define MAX 10
+#define MAXIMUM 1000
 
-typedef struct edge
+typedef struct
 {
-    int u, v, w;
-} edge;
+    int u;
+    int v;
+    int weight;
+} data;
 
-typedef struct edge_list
+typedef struct
 {
-    edge data[MAX];
-    int n;
-} edge_list;
+    data elem[MAXIMUM];
+    int lastIdx;
+} POT;
 
-edge_list elist;
-
-int Graph[MAX][MAX], n;
-edge_list spanlist;
-
-void kruskalAlgo();
-int find(int belongs[], int vertexno);
-void applyUnion(int belongs[], int c1, int c2);
-void sort();
-void print();
-
-// Applying Krushkal Algo
-void kruskalAlgo()
+typedef struct node
 {
-    int belongs[MAX], i, j, cno1, cno2;
-    // init elist
-    elist.n = 0;
+    int vertex;
+    int weight;
+    struct node *next;
+} Node, *NodePtr;
 
-    // populate elist
-    for (i = 1; i < n; i++)
+typedef NodePtr *AdjList;
+typedef int **MATRIX;
+
+void insert(int u, int v, int weight, POT *P)
+{
+    int i, parent;
+    if (P->lastIdx < MAXIMUM - 1)
     {
-        for (j = 0; j < i; j++)
+        i = ++P->lastIdx;
+        parent = (i - 1) / 2;
+
+        while (i > 0 && P->elem[parent].weight > weight)
         {
-            if (Graph[i][j] != 0)
+            P->elem[i] = P->elem[parent];
+            i = parent;
+            parent = (i - 1) / 2;
+        }
+        P->elem[i].u = u;
+        P->elem[i].v = v;
+        P->elem[i].weight = weight;
+    }
+}
+
+data deleteMin(POT *P)
+{
+    int i, LC;
+    data retval, temp;
+    if (P->lastIdx > -1)
+    {
+        i = 0;
+        retval = P->elem[i];
+        P->elem[i] = P->elem[P->lastIdx--];
+
+        LC = 2 * i + 1;
+        while (LC <= P->lastIdx)
+        {
+            if (LC + 1 <= P->lastIdx && P->elem[LC].weight > P->elem[LC + 1].weight)
+                LC++;
+
+            if (P->elem[i].weight > P->elem[LC].weight)
             {
-                elist.data[elist.n].u = i;
-                elist.data[elist.n].v = j;
-                elist.data[elist.n].w = Graph[i][j];
-                elist.n++;
+                temp = P->elem[i];
+                P->elem[i] = P->elem[LC];
+                P->elem[LC] = temp;
+                i = LC;
+                LC = 2 * i + 1;
+            }
+            else
+            {
+                break;
             }
         }
     }
-
-    // sort elist asc by weight
-    sort();
-
-    for (i = 0; i < n; i++)
-        belongs[i] = i;
-    // 0,1,2,3,4,5
-
-    spanlist.n = 0;
-
-    for (i = 0; i < elist.n; i++)
-    {
-        cno1 = find(belongs, elist.data[i].u); //2
-        cno2 = find(belongs, elist.data[i].v);
-
-        if (cno1 != cno2)
-        {
-            spanlist.data[spanlist.n] = elist.data[i];
-            spanlist.n = spanlist.n + 1;
-            applyUnion(belongs, cno1, cno2);
-        }
-    }
+    return retval;
 }
 
-int find(int belongs[], int vertexno)
+int find(int i, int parent[])
 {
-    return (belongs[vertexno]);
+    while (i != parent[i])
+        i = parent[i];
+    return i;
 }
 
-void applyUnion(int belongs[], int c1, int c2)
+int add(int u, int v, data retval[], int count)
 {
     int i;
-
-    for (i = 0; i < n; i++)
-        if (belongs[i] == c2)
-            belongs[i] = c1;
+    retval[count].u = u;
+    retval[count].v = v;
+    count++;
+    return 1;
 }
 
-// Sorting algo
-void sort()
+void unionSet(int parent[], int u, int v)
 {
-    int i, j;
-    edge temp;
-
-    for (i = 1; i < elist.n; i++)
-        for (j = 0; j < elist.n - 1; j++)
-            if (elist.data[j].w > elist.data[j + 1].w)
-            {
-                temp = elist.data[j];
-                elist.data[j] = elist.data[j + 1];
-                elist.data[j + 1] = temp;
-            }
+    int i = find(u, parent);
+    int j = find(v, parent);
+    parent[j] = i;
 }
 
-// Printing the result
-void print()
+data *kruskalMatrix(MATRIX M)
 {
-    int i, cost = 0;
+    int parent[MAX_VERTEX], min_cost = 0;
+    int i, u, v, count = 0;
+    data temp;
+    POT P = {{}, -1};
+    data *retval;
 
-    for (i = 0; i < spanlist.n; i++)
+    retval = (data *)calloc(MAX_VERTEX, sizeof(data));
+    if (retval != NULL)
     {
-        printf("\n%d - %d : %d", spanlist.data[i].u, spanlist.data[i].v, spanlist.data[i].w);
-        cost = cost + spanlist.data[i].w;
-    }
 
-    printf("\nSpanning tree cost: %d", cost);
+        for (u = 0; u < MAX_VERTEX; u++)
+        {
+            for (v = u; v < MAX_VERTEX; v++)
+            {
+                if (M[u][v] != INF && M[u][v] != 0)
+                {
+                    insert(u, v, M[u][v], &P);
+                }
+            }
+        }
+
+        for (i = 0; i < MAX_VERTEX; i++)
+            parent[i] = i;
+
+        while (P.lastIdx != -1 && count <= MAX_VERTEX)
+        {
+
+            temp = deleteMin(&P);
+            u = temp.u;
+            v = temp.v;
+
+            if (find(u, parent) != find(v, parent))
+            {
+
+                add(u, v, retval, count);
+                count++;
+
+                min_cost += temp.weight;
+                unionSet(parent, u, v);
+            }
+        }
+    }
+    printf("\n\nMinimum Cost is %d", min_cost);
+    return retval;
+}
+
+data *kruskalList(AdjList L)
+{
+    POT P = {{}, -1};
+    data temp;
+    int i, count = 0, u, v, min = 0;
+    int parent[MAX_VERTEX];
+    NodePtr trav;
+    data *retval;
+
+    for (i = 0; i < MAX_VERTEX; i++)
+        parent[i] = i;
+
+    retval = (data *)calloc(MAX_VERTEX, sizeof(data));
+    if (retval != NULL)
+    {
+
+        for (i = 0; i < MAX_VERTEX; i++)
+        {
+
+            trav = L[i];
+            while (trav != NULL)
+            {
+                insert(i, trav->vertex, trav->weight, &P);
+                trav = trav->next;
+            }
+        }
+
+        while (P.lastIdx != -1 && count < MAX_VERTEX)
+        {
+
+            temp = deleteMin(&P);
+            u = temp.u;
+            v = temp.v;
+
+            if (find(u, parent) != find(v, parent))
+            {
+
+                add(u, v, retval, count);
+                count++;
+
+                min += temp.weight;
+                unionSet(parent, u, v);
+            }
+        }
+    }
+    printf("\nMinimum Cost is %d", min);
+    return retval;
+}
+
+void display(AdjList A)
+{
+    for (int i = 0; i < MAX_VERTEX; i++)
+    {
+        printf("%d: ", i);
+        for (NodePtr trav = A[i]; trav != NULL; trav = trav->next)
+        {
+            printf("%d ", trav->vertex);
+        }
+        printf("\n");
+    }
+    printf("\n");
 }
 
 int main()
 {
-    int i, j, total_cost;
-
-    n = 6;
-
-    Graph[0][0] = 0;
-    Graph[0][1] = 4;
-    Graph[0][2] = 4;
-    Graph[0][3] = 0;
-    Graph[0][4] = 0;
-    Graph[0][5] = 0;
-    Graph[0][6] = 0;
-
-    Graph[1][0] = 4;
-    Graph[1][1] = 0;
-    Graph[1][2] = 2;
-    Graph[1][3] = 0;
-    Graph[1][4] = 0;
-    Graph[1][5] = 0;
-    Graph[1][6] = 0;
-
-    Graph[2][0] = 4;
-    Graph[2][1] = 2;
-    Graph[2][2] = 0;
-    Graph[2][3] = 3;
-    Graph[2][4] = 4;
-    Graph[2][5] = 0;
-    Graph[2][6] = 0;
-
-    Graph[3][0] = 0;
-    Graph[3][1] = 0;
-    Graph[3][2] = 3;
-    Graph[3][3] = 0;
-    Graph[3][4] = 3;
-    Graph[3][5] = 0;
-    Graph[3][6] = 0;
-
-    Graph[4][0] = 0;
-    Graph[4][1] = 0;
-    Graph[4][2] = 4;
-    Graph[4][3] = 3;
-    Graph[4][4] = 0;
-    Graph[4][5] = 0;
-    Graph[4][6] = 0;
-
-    Graph[5][0] = 0;
-    Graph[5][1] = 0;
-    Graph[5][2] = 2;
-    Graph[5][3] = 0;
-    Graph[5][4] = 3;
-    Graph[5][5] = 0;
-    Graph[5][6] = 0;
-
-    kruskalAlgo();
-    print();
+    return 0;
 }
