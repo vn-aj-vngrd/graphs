@@ -114,6 +114,14 @@ void display(AdjList A)
     printf("\n");
 }
 
+void displayMST(EdgeType mst[])
+{
+    for (int i = 0; i < MAX_VERTEX - 1; i++)
+    {
+        printf("(%d->%d) %d\n", mst[i].u, mst[i].v, mst[i].weight);
+    }
+}
+
 int main()
 {
     // EdgeList E = {{{1, 3, 20}, {2, 3, 30}, {3, 4, 40}, {0, 1, 50}, {3, 0, 40}}, 5};
@@ -122,10 +130,7 @@ int main()
     display(A);
 
     EdgeType *mst = prim(A, 1);
-    for (int i = 0; i < MAX_VERTEX - 1; i++)
-    {
-        printf("%d %d %d\n", mst[i].u, mst[i].v, mst[i].weight);
-    }
+    displayMST(mst);
 
     return 0;
 }
